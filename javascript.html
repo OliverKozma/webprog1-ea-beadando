@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webprog - JavaScript CRUD</title>
+    <style>
+        /* Alap stílusok a látványos megjelenéshez */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f7f6; }
+        header { background: #333; color: #fff; padding: 1rem 0; text-align: center; }
+        nav ul { list-style: none; padding: 0; display: flex; justify-content: center; background: #444; margin: 0; }
+        nav a { color: white; text-decoration: none; padding: 10px 20px; display: block; }
+        nav a:hover { background: #555; }
+        
+        main { padding: 20px; max-width: 900px; margin: auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { margin: 0; font-size: 1.8rem; }
+        
+        * MODERN FORM KONTÉNER STÍLUS */
+        .form-container { 
+            background: #f8f9fa; 
+            padding: 25px; 
+            border-radius: 10px; 
+            margin-bottom: 30px; 
+            border: 1px solid #e1e4e8;
+            transition: 0.3s;
+        }
+        #form-title { margin-top: 0; color: #2c3e50; font-size: 1.2rem; }
+        .form-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        
+        input[type="text"] { 
+            padding: 10px 15px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            flex: 1; 
+            min-width: 200px;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: #00d4ff; }
+
+        /* GOMBOK SZÍNEZÉSE ÉS STÍLUSA */
+        button { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-add { background: #28a745; color: white; }
+        .btn-edit-mode { background: #ffc107; color: #212529; }
+        .btn-cancel { background: #6c757d; color: white; margin-left: 5px; }
+        
+        .action-btn-edit { background: #007bff; color: white; padding: 6px 12px; margin-right: 5px; }
+        .action-btn-delete { background: #dc3545; color: white; padding: 6px 12px; }
+
+        /* TÁBLÁZAT MEGJELENÍTÉSE */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #666; text-transform: uppercase; font-size: 0.85rem; }
+        tr:hover { background-color: #fcfcfc; }
+
+        footer { text-align: center; padding: 20px; background: #333; color: white; margin-top: 40px; }
+    </style>
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Web programozás-1 Előadás Házi feladat</h1>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="index.html">Főoldal</a></li>
+        <li><a href="javascript.html">JavaScript CRUD</a></li>
+        <li><a href="react.html">React CRUD</a></li>
+        <li><a href="spa.html">SPA</a></li>
+        <li><a href="fetchapi.html">Fetch API</a></li>
+        <li><a href="axios.html">Axios</a></li>
+        <li><a href="oojs.html">OOJS</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h2>JavaScript CRUD - Szoftverleltár </h2>
+    
+    <div class="form-container">
+        <h3 id="form-title">Új szoftver hozzáadása</h3>
+        <input type="hidden" id="edit-index" value="-1">
+        <div class="form-group">
+            <input type="text" id="input-name" placeholder="Szoftver neve">
+            <input type="text" id="input-category" placeholder="Kategória">
+            <button class="btn-add" id="save-btn" onclick="saveData()">Hozzáadás</button>
+            <button id="cancel-btn" style="display:none;" onclick="resetForm()">Mégse</button>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Név</th>
+                <th>Kategória</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            </tbody>
+    </table>
+</main>
+
+<footer>
+        <hr>
+        <p> <strong>Készítők:</strong>
+            Kozma Olivér - HVZ9U1 és
+            Naske-Gatyás Márton - GIWPQT
+        </p>
+    </footer>
+
+<script>
+    
+    let softwareList = [
+        { name: "AIR", category: "plug-in" },
+        { name: "FastStone Image Viewer", category: "képkezelés" },
+        { name: "InfraRecorder", category: "DVD-írás" },
+        { name: "PDF Split And Merge Basic", category: "pdf-manipulálás" },
+        { name: "CCleaner", category: "gépkarbantartás" },
+        { name: "Tracker", category: "fizika oktatás" },
+        { name: "Acrobat Reader", category: "pdf-olvasás" },
+        { name: "Multivox 4 Magyar szövegfelolvasó", category: "szövegfelolvasó" },
+        { name: "WinMerge", category: "fájlösszehasonlítás" },
+        { name: "Free Pascal", category: "fejlesztő környezet" },
+        { name: "Geany", category: "editor" },
+        { name: "Euler3D", category: "matematika oktatás" },
+        { name: "IrfanView", category: "képkezelés" },
+        { name: "Blender", category: "modellezés" },
+        { name: "Flash Player ActiveX", category: "plug-in" },
+        { name: "CDBurnerXP", category: "DVD-írás" },
+        { name: "Java SE Development Kit", category: "fejlesztő környezet" },
+        { name: "Flash Player PPAPI", category: "plug-in" },
+        { name: "SharePoint Designer 2007", category: "webszerkesztés" },
+        { name: "K-Lite Mega Codec Pack", category: "médialejátszás" },
+        { name: "Notepad++", category: "editor" },
+        { name: "PatchCleaner", category: "gépkarbantartás" },
+        { name: "Audacity", category: "hangszerkesztés" },
+        { name: "Java", category: "plug-in" },
+        { name: "Visual Studio 2013", category: "fejlesztő környezet" },
+        { name: "Greenshot", category: "képernyőkép-készítés" },
+        { name: "Lynx 4", category: "interaktív tábla" },
+        { name: "PuTTY", category: "távoli terminál" },
+        { name: "Google Föld", category: "virtuális földgömb" },
+        { name: "PDFCreator", category: "pdf-generálás" },
+        { name: "MuseScore", category: "kottaírás" },
+        { name: "Disk Drill", category: "adathelyreállítás" },
+        { name: "Flash Player NPAPI", category: "plug-in" },
+        { name: "Google Drive", category: "online fájltárolás" },
+        { name: "Google Earth", category: "virtuális földgömb" },
+        { name: "Filzip", category: "tömörítés" },
+        { name: "FreeCommander XE", category: "fájlkezelés" },
+        { name: "Reader", category: "pdf-olvasás" },
+        { name: "Wings 3D", category: "modellezés" },
+        { name: "Windows Live Essentials", category: "alkalmazás gyűjtemény" },
+        { name: "Imagine", category: "fejlesztő környezet" },
+        { name: "LibreOffice", category: "irodai programcsomag" },
+        { name: "Windows Live Messenger", category: "azonnali üzenetküldés" },
+        { name: "Scratch 2 Offline Editor", category: "fejlesztő környezet" },
+        { name: "Inkscape", category: "vektorgarfikus szerkesztés" },
+        { name: "Adafor", category: "adminisztráció" },
+        { name: "Skype", category: "azonnali üzenetküldés" },
+        { name: "Mozilla Firefox", category: "böngészés" },
+        { name: "Opera", category: "böngészés" },
+        { name: "Dev-C++", category: "fejlesztő környezet" },
+        { name: "NetBeans IDE", category: "fejlesztő környezet" },
+        { name: "Shockwave Player", category: "plug-in" },
+        { name: "Foxit Reader", category: "pdf-olvasás" },
+        { name: "Movie Maker", category: "videószerkesztés" },
+        { name: "Silverlight", category: "plug-in" },
+        { name: "KompoZer", category: "webszerkesztés" },
+        { name: "SMART Notebook Interactive Viewer", category: "interaktív tábla" },
+        { name: "Euklides", category: "matematika oktatás" },
+        { name: "paint.net", category: "képszerkesztés" },
+        { name: "WinSCP", category: "távoli fájlhozzáférés" },
+        { name: "SVG Viewer", category: "plug-in" },
+        { name: "VUE", category: "gondolattérkép készítés" },
+        { name: "mimio Studio", category: "interaktív tábla" },
+        { name: "Real Alternative", category: "médialejátszás" },
+        { name: "XnView", category: "képkezelés" },
+        { name: "Windows Live Movie Maker", category: "videószerkesztés" },
+        { name: "Picasa", category: "képszerkesztés" },
+        { name: "SMART Notebook", category: "interaktív tábla" },
+        { name: "Double Commander", category: "fájlkezelés" },
+        { name: "ImgBurn", category: "DVD-írás" },
+        { name: "Google Chrome", category: "böngészés" },
+        { name: "VLC media player", category: "médialejátszás" },
+        { name: "FileZilla Client", category: "távoli fájlhozzáférés" },
+        { name: "GeoGebra", category: "matematika oktatás" },
+        { name: "FFmpeg for Audacity", category: "hangszerkesztés" },
+        { name: "BS.Player FREE", category: "médialejátszás" },
+        { name: "Dia", category: "diagramkészítés" },
+        { name: "Visual Studio 2015", category: "fejlesztő környezet" },
+        { name: "Open-Sankoré", category: "interaktív tábla" },
+        { name: "GIMP", category: "képszerkesztés" },
+        { name: "Freeplane", category: "gondolattérkép készítés" },
+        { name: "Dropbox", category: "online fájltárolás" },
+        { name: "7-Zip", category: "tömörítés" },
+        { name: "K-Lite Codec Pack", category: "médialejátszás" },
+        { name: "EclipseCrossword", category: "keresztrejtvény készítés" },
+        { name: "FreeMind", category: "gondolattérkép készítés" }
+    ];
+
+    
+    function displayData() {
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        softwareList.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${index + 1}</strong></td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>
+                        <button class="action-btn-edit" onclick="editData(${index})">Szerkesztés</button>
+                        <button class="action-btn-delete" onclick="deleteData(${index})">Törlés</button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    
+    function saveData() {
+        const nameVal = document.getElementById('input-name').value;
+        const catVal = document.getElementById('input-category').value;
+        const editIdx = parseInt(document.getElementById('edit-index').value);
+
+        if (nameVal.trim() === "" || catVal.trim() === "") {
+            alert("Kérlek töltsd ki mindkét mezőt!");
+            return;
+        }
+
+        if (editIdx === -1) {
+            softwareList.push({ name: nameVal, category: catVal });
+        } else {
+            softwareList[editIdx] = { name: nameVal, category: catVal };
+        }
+
+        resetForm();
+        displayData();
+    }
+
+    function deleteData(index) {
+        if (confirm(`Biztosan törölni szeretnéd a(z) ${softwareList[index].name} szoftvert?`)) {
+            softwareList.splice(index, 1);
+            displayData();
+        }
+    }
+
+    // Törlés (DELETE)
+    function deleteData(index) {
+        if (confirm("Biztosan törlöd?")) {
+            softwareList.splice(index, 1);
+            displayData();
+        }
+    }
+
+    
+    function editData(index) {
+        
+        document.getElementById('input-name').value = softwareList[index].name;
+        document.getElementById('input-category').value = softwareList[index].category;
+        document.getElementById('edit-index').value = index;
+        
+        
+        document.getElementById('form-title').innerText = "Szoftver módosítása";
+        document.getElementById('save-btn').innerText = "Módosítás mentése";
+        document.getElementById('save-btn').className = "btn-edit-mode";
+        document.getElementById('cancel-btn').style.display = "inline-block";
+
+        
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        
+        document.getElementById('input-name').focus();
+    }
+
+    
+    function resetForm() {
+        document.getElementById('input-name').value = '';
+        document.getElementById('input-category').value = '';
+        document.getElementById('edit-index').value = '-1';
+        document.getElementById('form-title').innerText = "Új szoftver hozzáadása";
+        document.getElementById('save-btn').innerText = "Hozzáadás";
+        document.getElementById('save-btn').classList.remove('btn-edit-mode');
+        document.getElementById('cancel-btn').style.display = "none";
+    }
+
+    
+    displayData();
+</script>
+
+</body>
+</html>
