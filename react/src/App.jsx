@@ -201,11 +201,14 @@ function App() {
         </table>
       </main>
 
-      {/* KÖTELEZŐ LÁBLÉC [cite: 22] */}
+      
       <footer>
-        <hr />
-        <p><strong>Készítők:</strong> Kozma Olivér (HVZ9U1) és Naske-Gatyás Márton (GIWPQT)</p>
-      </footer>
+        
+        <p> <strong>Készítők:</strong>
+            Kozma Olivér - HVZ9U1 és
+            Hupka Bálint - KJWO66
+        </p>
+    </footer>
     </div>
   )
 }
