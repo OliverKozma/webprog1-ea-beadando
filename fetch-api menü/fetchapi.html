@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <meta charset="UTF-8">
+            <title>Fetch API CRUD</title>
+    </head>
+<body>
+
+<div>
+    <h2>Fetch API - Szoftver CRUD</h2>
+
+    <p id="message"></p>
+    <h3 id="addedit"></h3>
+
+    <form id="form">
+    <input type="hidden" id="id">
+
+<div>
+    <input type="text" id="nev" placeholder="Név" required>
+</div>
+
+<div>
+    <input type="text" id="kategoria" placeholder="Kategória" required>
+</div>
+
+<div>
+    <button>Mentés</button>
+</div>
+
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Név</th>
+            <th>Kategória</th>
+            <th>Művelet</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabla"></tbody>
+</table>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
