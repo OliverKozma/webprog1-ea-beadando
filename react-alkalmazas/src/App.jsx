@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 
 function App() {
-  // 1. ADATOK: A gep.txt összes adata (részlet, a többit a [...] helyére másolhatod be)
+  
   const [gepList, setGepList] = useState([
    { id: 1, hely: "T403", tipus: "asztali", ipcim: "192.168.2.1" },
   { id: 2, hely: "T212", tipus: "asztali", ipcim: "192.168.2.2" },
@@ -82,11 +82,11 @@ function App() {
   { id: 76, hely: "T208", tipus: "notebook", ipcim: "192.168.4.6" }
   ]);
 
-  // 2. ÁLLAPOTOK (useState) a CRUD műveletekhez [cite: 30]
+  
   const [formData, setFormData] = useState({ hely: "", tipus: "", ipcim: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // 3. LOGIKA: Mentés (Hozzáadás vagy Módosítás) [cite: 17]
+  
   const handleSave = () => {
     if (!formData.hely || !formData.tipus || !formData.ipcim) {
       alert("Minden mezőt tölts ki!");
@@ -94,55 +94,42 @@ function App() {
     }
 
     if (editingId !== null) {
-      // UPDATE (Módosítás)
+      
       setGepList(gepList.map(g => g.id === editingId ? { ...formData, id: editingId } : g));
       setEditingId(null);
     } else {
-      // CREATE (Hozzáadás)
+      
       const newId = gepList.length > 0 ? Math.max(...gepList.map(g => g.id)) + 1 : 1;
       setGepList([...gepList, { ...formData, id: newId }]);
     }
     setFormData({ hely: "", tipus: "", ipcim: "" });
   };
 
-  // 4. LOGIKA: Törlés [cite: 17]
+  
   const handleDelete = (id) => {
     if (window.confirm("Biztosan törölni szeretnéd ezt a gépet?")) {
       setGepList(gepList.filter(g => g.id !== id));
     }
   };
 
-  // 5. LOGIKA: Szerkesztés indítása (adatok betöltése a formba)
+  
   const startEdit = (gep) => {
     setFormData({ hely: gep.hely, tipus: gep.tipus, ipcim: gep.ipcim });
     setEditingId(gep.id);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Felgördül az űrlaphoz
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
 
   return (
     <div className="container">
-      {/* KÖTELEZŐ FEJLÉC [cite: 21] */}
+      
       <header>
         <h1>Web programozás-1 Előadás Házi feladat</h1>
       </header>
 
-      {/* NAVIGÁCIÓ (Az index.html-hez igazítva) */}
-      <nav>
-        <ul>
-          <li><a href="index.html">Főoldal</a></li>
-          <li><a href="javascript.html">JavaScript CRUD</a></li>
-          <li><a href="react.html">React CRUD</a></li>
-          <li><a href="spa.html">SPA</a></li>
-          <li><a href="fetchapi.html">Fetch API</a></li>
-          <li><a href="axios.html">Axios</a></li>
-          <li><a href="oojs.html">OOJS</a></li>
-        </ul>
-      </nav>
-
       <main>
         <h2>React CRUD - Géptermi leltár</h2>
         
-        {/* CRUD ŰRLAP (Create/Update) */}
+        
         <div className="form-box">
           <h3>{editingId !== null ? "Gép adatainak módosítása" : "Új gép felvétele"}</h3>
           <div className="form-group">
@@ -173,7 +160,7 @@ function App() {
           </div>
         </div>
 
-        {/* ADATOK MEGJELENÍTÉSE (Read) [cite: 17] */}
+        
         <table>
           <thead>
             <tr>
